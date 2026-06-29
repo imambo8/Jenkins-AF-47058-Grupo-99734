@@ -2,6 +2,10 @@
 
 ## Instalaciones
 
+### Herramientas
+
+- [Git](https://git-scm.com/)
+
 ### Docker Desktop
 
 - [WSL 2 feature on Windows](https://learn.microsoft.com/es-es/windows/wsl/install)
@@ -86,6 +90,10 @@
 - <https://github.com/jmagit/demos-frontend-angular>
 - <https://github.com/jmagit/MOCKWebServer>
 - <https://github.com/spring-projects/spring-petclinic>
+
+## Documentación
+
+- https://www.jenkins.io/
 
 ## Comandos
 
