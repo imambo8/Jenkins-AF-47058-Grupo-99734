@@ -9,6 +9,7 @@ pipeline {
     stages {
          stage("Prepara") {
             steps {
+                echo "BRANCH_NAME: ${env.BRANCH_NAME}"
                 git 'https://github.com/jmagit/demos-devops.git'
             }
         }
