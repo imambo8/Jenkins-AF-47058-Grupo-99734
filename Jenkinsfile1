@@ -1,0 +1,18 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('Hola') {
+            steps {
+                echo 'Mi primer pipeline'
+            }
+        }
+
+        stage('Fecha') {
+            steps {
+                sh 'date'
+            }
+        }
+    }
+}
+``
