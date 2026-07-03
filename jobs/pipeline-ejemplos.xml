@@ -18,15 +18,17 @@
       <parameterDefinitions>
         <hudson.model.ChoiceParameterDefinition>
           <name>FORMULA</name>
-          <choices>
-            <string>Hola</string>
-            <string>Adios</string>
+          <choices class="java.util.Arrays$ArrayList">
+            <a class="string-array">
+              <string>Hola</string>
+              <string>Adios</string>
+            </a>
           </choices>
         </hudson.model.ChoiceParameterDefinition>
       </parameterDefinitions>
     </hudson.model.ParametersDefinitionProperty>
   </properties>
-  <definition class="org.jenkinsci.plugins.workflow.cps.CpsFlowDefinition" plugin="workflow-cps@4331.4333.v50a_b_076c5199">
+  <definition class="org.jenkinsci.plugins.workflow.cps.CpsFlowDefinition" plugin="workflow-cps@4350.vcc65d4958821">
     <script>pipeline {
     agent any
     environment {
@@ -42,6 +44,12 @@
                 echo &quot;&apos;${params.FORMULA} ${NOMBRE}&apos;, ${env.JOB_NAME} ${currentBuild.currentResult}&quot;
             }
         }
+        stage(&apos;Deliver&apos;) {
+            steps {
+                input cancel: &apos;Abortar&apos;, message: &apos;Ha superado el umbral de calidad, ¿continuo con el despliegue?&apos;, ok: &apos;Desplegar&apos;
+            }
+        }
+
         // stage(&apos;Secreto&apos;) {
         //     steps {
         //         echo &quot;&apos;Hello ${DOCKERHUB_CREDENTIALS_USR}&apos;, contraseña: ${DOCKERHUB_CREDENTIALS_PSW}&quot;

@@ -1,0 +1,84 @@
+<?xml version="1.1" encoding="UTF-8"?>
+<flow-definition plugin="workflow-job@1581.ve4b_d0db_fcb_b_b_">
+  <actions>
+    <org.jenkinsci.plugins.pipeline.modeldefinition.actions.DeclarativeJobAction plugin="pipeline-model-definition@2.2291.v2934911987b_6"/>
+    <org.jenkinsci.plugins.pipeline.modeldefinition.actions.DeclarativeJobPropertyTrackerAction plugin="pipeline-model-definition@2.2291.v2934911987b_6">
+      <jobProperties/>
+      <triggers/>
+      <parameters/>
+      <options/>
+    </org.jenkinsci.plugins.pipeline.modeldefinition.actions.DeclarativeJobPropertyTrackerAction>
+  </actions>
+  <description></description>
+  <keepDependencies>false</keepDependencies>
+  <properties/>
+  <definition class="org.jenkinsci.plugins.workflow.cps.CpsFlowDefinition" plugin="workflow-cps@4350.vcc65d4958821">
+    <script>pipeline {
+    agent {
+        docker {
+            image &apos;maven:3.9.11-eclipse-temurin-25-noble&apos;
+            args &apos;-v maven-repository:/root/.m2&apos;
+        }
+    }
+    stages {
+         stage(&quot;Prepara&quot;) {
+            steps {
+                git &apos;https://github.com/jmagit/demos-devops.git&apos;
+            }
+        }
+        stage(&quot;Compile&quot;) {
+            steps {
+                sh &quot;mvn compile&quot;
+            }
+        }
+        stage(&quot;Unit test&quot;) {
+            steps {
+                sh &quot;mvn test&quot;
+            }
+            post {
+                always {
+                    junit &apos;target/surefire-reports/*.xml&apos;
+                }
+            }
+        }
+        // stage(&quot;SonarQube Analysis&quot;) {
+        //     steps {
+        //         withSonarQubeEnv(&apos;SonarQubeDockerServer&apos;) {
+        //             sh &apos;mvn clean verify sonar:sonar&apos;
+        //         }
+        //         timeout(2) { // time: 2 unit: &apos;MINUTES&apos;
+        //           // In case of SonarQube failure or direct timeout exceed, stop Pipeline
+        //           waitForQualityGate abortPipeline: waitForQualityGate().status != &apos;OK&apos;
+        //         }
+        //     }
+        // }
+        stage(&quot;Build&quot;) {
+            steps {
+                sh &quot;mvn package -DskipTests&quot;
+            }
+            post {
+                success {
+                    archiveArtifacts artifacts: &apos;target/*.jar&apos;, followSymlinks: false
+                }
+            }
+        }
+        stage(&quot;Deploy&quot;) {
+            steps {
+                sh &quot;mvn install -DskipTests&quot;
+            }
+        }
+    }
+    post {
+        always {
+             mail to: &apos;team@example.com&apos;,
+             subject: &quot;Finalizado Pipeline: ${currentBuild.fullDisplayName}&quot;,
+             body: &quot;Status ${currentBuild.currentResult} - Something is wrong with ${env.BUILD_URL}&quot;
+        }
+    }
+}
+</script>
+    <sandbox>true</sandbox>
+  </definition>
+  <triggers/>
+  <disabled>false</disabled>
+</flow-definition>
